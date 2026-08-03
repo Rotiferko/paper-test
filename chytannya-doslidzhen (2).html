@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Як читати дослідження — діагностична панель</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EEF2F3;
+    --panel:#FFFFFF;
+    --ink:#152430;
+    --ink-soft:#4C5D68;
+    --ink-faint:#7A8994;
+    --line:#D9E1E4;
+    --line-soft:#E7ECEE;
+    --teal:#0E857B;
+    --teal-deep:#0A655E;
+    --teal-wash:#E2F1EF;
+    --flag:#CF4425;
+    --flag-wash:#FAEBE6;
+    --amber:#B87410;
+    --amber-wash:#F7EEDD;
+    --good:#2C9366;
+    --readout:#132330;
+    --readout-line:#2A3E4C;
+  }
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'IBM Plex Sans',system-ui,sans-serif;
+    font-size:16px;
+    line-height:1.62;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:820px;margin:0 auto;padding:0 20px 96px;}
+
+  /* ---------- header ---------- */
+  header{padding:52px 0 8px;}
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--teal-deep);font-weight:500;
+    display:flex;align-items:center;gap:10px;margin-bottom:20px;
+  }
+  .eyebrow::before{content:"";width:26px;height:2px;background:var(--teal);display:inline-block;}
+  h1{
+    font-size:clamp(28px,5.4vw,42px);line-height:1.1;
+    font-weight:700;letter-spacing:-.02em;margin:0 0 16px;
+  }
+  .lede{font-size:clamp(16px,2.4vw,18px);color:var(--ink-soft);max-width:62ch;margin:0;}
+
+  /* ---------- principle callout ---------- */
+  .principle{
+    margin:32px 0 44px;padding:20px 22px;background:var(--panel);
+    border:1px solid var(--line);border-left:4px solid var(--teal);border-radius:4px;
+  }
+  .principle .tag{
+    font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--teal-deep);font-weight:600;
+  }
+  .principle p{margin:8px 0 0;font-size:15.5px;color:var(--ink);}
+  .principle strong{font-weight:600;}
+
+  /* ---------- section titles ---------- */
+  .section-eyebrow{
+    font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--ink-faint);font-weight:500;
+    margin:56px 0 14px;
+  }
+
+  /* ---------- pyramid ---------- */
+  .pyramid{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:26px 22px 22px;}
+  .pyr-title{font-weight:600;font-size:18px;margin:0 0 4px;}
+  .pyr-sub{color:var(--ink-soft);font-size:14.5px;margin:0 0 22px;}
+  .pyr-scale{
+    display:flex;justify-content:space-between;
+    font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--ink-faint);margin-bottom:10px;
+  }
+  .level{
+    margin:0 auto 7px;border-radius:4px;padding:11px 16px;cursor:pointer;
+    display:flex;align-items:center;gap:12px;color:#fff;
+    transition:transform .18s ease, filter .18s ease;
+    border:none;width:100%;text-align:left;font-family:inherit;
+  }
+  .level:hover{filter:brightness(1.06);transform:translateX(2px);}
+  .level:focus-visible{outline:3px solid var(--ink);outline-offset:2px;}
+  .level .lname{font-weight:600;font-size:14.5px;}
+  .level .lnote{font-size:13px;opacity:.92;margin-left:auto;text-align:right;}
+  .lv1{background:var(--teal-deep);width:58%;}
+  .lv2{background:var(--teal);width:66%;}
+  .lv3{background:#3E8C86;width:76%;}
+  .lv4{background:#6E8A8E;width:85%;}
+  .lv5{background:var(--amber);width:93%;}
+  .lv6{background:#9AA6AC;width:100%;}
+  .pyr-detail{
+    margin-top:16px;padding:14px 16px;background:var(--teal-wash);
+    border-radius:6px;font-size:14.5px;color:var(--ink);min-height:20px;
+    border:1px solid #CFE6E2;
+  }
+  .pyr-detail.empty{background:var(--line-soft);border-color:var(--line);color:var(--ink-faint);font-style:italic;}
+  @media(max-width:560px){
+    .level{width:100%!important;flex-wrap:wrap;}
+    .level .lnote{margin-left:0;text-align:left;flex-basis:100%;}
+  }
+
+  /* ---------- progress ---------- */
+  .progress-bar{
+    position:sticky;top:0;z-index:20;background:var(--paper);
+    padding:12px 0 10px;margin-top:8px;
+    display:flex;align-items:center;gap:14px;
+    border-bottom:1px solid var(--line);
+  }
+  .progress-track{flex:1;height:8px;background:var(--line);border-radius:99px;overflow:hidden;}
+  .progress-fill{height:100%;width:0;background:var(--teal);border-radius:99px;transition:width .3s ease;}
+  .progress-label{font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--ink-soft);white-space:nowrap;}
+
+  /* ---------- steps ---------- */
+  .step{background:var(--panel);border:1px solid var(--line);border-radius:8px;margin-top:16px;overflow:hidden;}
+  .step-head{
+    display:flex;align-items:baseline;gap:14px;padding:18px 20px;
+    border-bottom:1px solid var(--line-soft);
+  }
+  .step-num{
+    font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;
+    color:var(--teal-deep);background:var(--teal-wash);border:1px solid #CFE6E2;
+    padding:3px 8px;border-radius:5px;white-space:nowrap;letter-spacing:.03em;
+  }
+  .step-title{font-weight:600;font-size:17.5px;margin:0;flex:1;line-height:1.3;}
+  .step-count{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-faint);white-space:nowrap;}
+  .step.done .step-num{background:var(--good);color:#fff;border-color:var(--good);}
+
+  .items{padding:6px 20px 16px;}
+  .item{border-bottom:1px solid var(--line-soft);padding:14px 0;}
+  .item:last-child{border-bottom:none;}
+  .item-row{display:flex;gap:12px;align-items:flex-start;}
+  .item-row input[type=checkbox]{
+    appearance:none;-webkit-appearance:none;margin:2px 0 0;flex-shrink:0;
+    width:20px;height:20px;border:2px solid var(--ink-faint);border-radius:5px;
+    cursor:pointer;position:relative;background:#fff;transition:all .15s ease;
+  }
+  .item-row input[type=checkbox]:hover{border-color:var(--teal);}
+  .item-row input[type=checkbox]:focus-visible{outline:3px solid var(--ink);outline-offset:2px;}
+  .item-row input[type=checkbox]:checked{background:var(--teal);border-color:var(--teal);}
+  .item-row input[type=checkbox]:checked::after{
+    content:"";position:absolute;left:5.5px;top:1.5px;width:5px;height:10px;
+    border:solid #fff;border-width:0 2.5px 2.5px 0;transform:rotate(45deg);
+  }
+  .q{cursor:pointer;font-weight:500;font-size:15.5px;flex:1;}
+  .q.checked{color:var(--ink-faint);}
+  .disclose{
+    background:none;border:none;cursor:pointer;padding:2px 6px;margin-top:1px;
+    color:var(--ink-faint);font-family:'IBM Plex Mono',monospace;font-size:11px;
+    flex-shrink:0;border-radius:4px;letter-spacing:.05em;
+  }
+  .disclose:hover{color:var(--teal-deep);background:var(--teal-wash);}
+  .disclose:focus-visible{outline:2px solid var(--ink);outline-offset:1px;}
+
+  .detail{max-height:0;overflow:hidden;transition:max-height .3s ease;}
+  .detail-inner{padding:12px 0 4px 32px;}
+  .detail .blk{margin-bottom:10px;font-size:14.5px;line-height:1.6;}
+  .detail .blk:last-child{margin-bottom:0;}
+  .detail .k{
+    font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.08em;
+    text-transform:uppercase;font-weight:600;display:block;margin-bottom:2px;
+  }
+  .k.why{color:var(--teal-deep);}
+  .k.how{color:var(--amber);}
+  .k.ex{color:var(--ink-faint);}
+  .detail .ex-txt{color:var(--ink-soft);font-style:italic;}
+
+  /* ---------- red flags ---------- */
+  .flags{background:var(--flag-wash);border:1px solid #EBC6BB;border-radius:8px;padding:22px 22px 8px;margin-top:16px;}
+  .flags h3{margin:0 0 4px;font-size:17.5px;font-weight:600;color:var(--flag);display:flex;align-items:center;gap:9px;}
+  .flags h3 .dot{width:10px;height:10px;border-radius:99px;background:var(--flag);display:inline-block;}
+  .flags .fsub{margin:0 0 14px;font-size:14px;color:var(--ink-soft);}
+  .flags ul{list-style:none;margin:0;padding:0 0 12px;}
+  .flags li{padding:9px 0;border-bottom:1px solid #EBD3CB;font-size:14.5px;display:flex;gap:11px;align-items:flex-start;}
+  .flags li:last-child{border-bottom:none;}
+  .flags li::before{content:"⚑";color:var(--flag);flex-shrink:0;font-size:14px;line-height:1.5;}
+
+  /* ---------- prompt generator ---------- */
+  .gen{margin-top:16px;background:var(--panel);border:1px solid var(--line);border-radius:8px;overflow:hidden;}
+  .gen-head{padding:20px 22px 4px;}
+  .gen-head h3{margin:0 0 6px;font-size:18px;font-weight:600;}
+  .gen-head p{margin:0;font-size:14.5px;color:var(--ink-soft);}
+  .gen-body{padding:14px 22px 22px;}
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-size:13px;font-weight:600;margin-bottom:5px;color:var(--ink);}
+  .field label .hint{font-weight:400;color:var(--ink-faint);font-size:12.5px;}
+  .field input,.field textarea,.field select{
+    width:100%;font-family:inherit;font-size:14.5px;color:var(--ink);
+    padding:9px 12px;border:1px solid var(--line);border-radius:6px;background:#FBFCFC;
+    resize:vertical;line-height:1.5;
+  }
+  .field input:focus,.field textarea:focus,.field select:focus{
+    outline:none;border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-wash);background:#fff;
+  }
+  .field textarea{min-height:52px;}
+
+  .readout{
+    background:var(--readout);border-radius:8px;margin-top:6px;
+    border:1px solid var(--readout-line);overflow:hidden;
+  }
+  .readout-top{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:10px 14px;border-bottom:1px solid var(--readout-line);
+  }
+  .readout-top .rlabel{
+    font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;
+    text-transform:uppercase;color:#7FB8B0;
+  }
+  .copy-btn{
+    font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;
+    background:var(--teal);color:#fff;border:none;padding:6px 13px;border-radius:5px;
+    cursor:pointer;text-transform:uppercase;font-weight:500;transition:background .15s;
+  }
+  .copy-btn:hover{background:var(--teal-deep);}
+  .copy-btn:focus-visible{outline:2px solid #fff;outline-offset:2px;}
+  .copy-btn.ok{background:var(--good);}
+  .readout pre{
+    margin:0;padding:16px;font-family:'IBM Plex Mono',monospace;font-size:13px;
+    line-height:1.72;color:#DCE7E5;white-space:pre-wrap;word-break:break-word;
+  }
+  .readout pre .ph{color:#6C8A93;font-style:italic;}
+
+  footer{margin-top:56px;padding-top:22px;border-top:1px solid var(--line);
+    font-size:13.5px;color:var(--ink-faint);line-height:1.6;}
+
+  /* ---------- metrics decoder ---------- */
+  .decoder{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:26px 22px 22px;}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:4px;}
+  .chip{
+    font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:500;
+    padding:8px 14px;border-radius:6px;border:1px solid var(--line);
+    background:#F7FAFA;color:var(--ink);cursor:pointer;transition:all .15s;
+  }
+  .chip:hover{border-color:var(--teal);color:var(--teal-deep);}
+  .chip:focus-visible{outline:3px solid var(--ink);outline-offset:2px;}
+  .chip.active{background:var(--teal);color:#fff;border-color:var(--teal);}
+
+  /* ---------- focus-check quiz ---------- */
+  .quiz{background:var(--panel);border:1px solid var(--line);border-radius:8px;overflow:hidden;}
+  .quiz-head{padding:20px 22px 6px;}
+  .quiz-head h3{margin:0 0 6px;font-size:18px;font-weight:600;}
+  .quiz-head p{margin:0;font-size:14.5px;color:var(--ink-soft);}
+  .qcase{padding:18px 22px;border-top:1px solid var(--line-soft);}
+  .qnum{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);font-weight:600;}
+  .qscenario{margin:7px 0 0;font-size:15px;background:var(--line-soft);border-radius:6px;padding:11px 13px;border-left:3px solid var(--ink-faint);}
+  .qprompt{font-weight:600;font-size:15px;margin:13px 0 10px;}
+  .qopts{display:flex;flex-direction:column;gap:8px;}
+  .qopt{
+    text-align:left;font-family:inherit;font-size:14.5px;padding:11px 14px;
+    border:1px solid var(--line);border-radius:7px;background:#FBFCFC;cursor:pointer;
+    color:var(--ink);transition:all .15s;line-height:1.5;
+  }
+  .qopt:hover:not(:disabled){border-color:var(--teal);background:var(--teal-wash);}
+  .qopt:focus-visible{outline:3px solid var(--ink);outline-offset:2px;}
+  .qopt:disabled{cursor:default;}
+  .qopt.correct{border-color:var(--good);background:#E6F4EC;}
+  .qopt.wrong{border-color:var(--flag);background:var(--flag-wash);}
+  .qopt .mark{font-family:'IBM Plex Mono',monospace;font-weight:600;margin-right:8px;}
+  .qfb{margin-top:11px;font-size:14px;padding:12px 14px;border-radius:6px;background:var(--teal-wash);border:1px solid #CFE6E2;line-height:1.55;}
+  .qfb .lead{font-weight:600;display:block;margin-bottom:3px;}
+  .qfb .ptr{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--teal-deep);display:block;margin-top:7px;letter-spacing:.03em;}
+  .quiz-result{margin:4px 22px 22px;padding:18px 20px;border-radius:8px;background:var(--readout);color:#DCE7E5;}
+  .quiz-result h4{margin:0 0 8px;font-size:16px;color:#fff;font-weight:600;}
+  .quiz-result .score{font-family:'IBM Plex Mono',monospace;font-size:26px;color:#7FD4C9;font-weight:600;}
+  .quiz-result p{margin:6px 0 0;font-size:14px;line-height:1.6;color:#C7D6D4;}
+
+  /* ---------- lookups + quality checker ---------- */
+  .lookup-btns{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 20px;}
+  .lookup-btn{
+    font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:500;
+    padding:9px 13px;border-radius:6px;border:1px solid var(--teal);
+    background:var(--teal-wash);color:var(--teal-deep);cursor:pointer;transition:all .15s;
+  }
+  .lookup-btn:hover{background:var(--teal);color:#fff;}
+  .lookup-btn:focus-visible{outline:3px solid var(--ink);outline-offset:2px;}
+  .signal-cols{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  @media(max-width:600px){.signal-cols{grid-template-columns:1fr;}}
+  .signal-group{border:1px solid var(--line);border-radius:8px;padding:14px 16px;}
+  .signal-group.green{background:#F1F8F4;border-color:#CDE7D8;}
+  .signal-group.red{background:var(--flag-wash);border-color:#EBC6BB;}
+  .signal-group h4{margin:0 0 8px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;font-family:'IBM Plex Mono',monospace;}
+  .signal-group.green h4{color:var(--good);}
+  .signal-group.red h4{color:var(--flag);}
+  .sig-item{display:flex;gap:10px;align-items:flex-start;padding:7px 0;font-size:13.8px;line-height:1.45;cursor:pointer;}
+  .sig-item input{
+    appearance:none;-webkit-appearance:none;margin:2px 0 0;flex-shrink:0;
+    width:18px;height:18px;border:2px solid var(--ink-faint);border-radius:4px;
+    cursor:pointer;position:relative;background:#fff;transition:all .15s;
+  }
+  .sig-item input:focus-visible{outline:2px solid var(--ink);outline-offset:2px;}
+  .signal-group.green input:checked{background:var(--good);border-color:var(--good);}
+  .signal-group.red input:checked{background:var(--flag);border-color:var(--flag);}
+  .sig-item input:checked::after{content:"";position:absolute;left:4.5px;top:1px;width:4px;height:9px;border:solid #fff;border-width:0 2.5px 2.5px 0;transform:rotate(45deg);}
+  #qc-verdict .tag{font-family:'IBM Plex Mono',monospace;font-weight:600;color:#7FD4C9;}
+  #qc-verdict .caveat{display:block;margin-top:10px;padding-top:10px;border-top:1px solid var(--readout-line);font-size:13px;color:#9FB3B0;}
+
+  .auto-btn{
+    width:100%;font-family:'IBM Plex Sans',sans-serif;font-size:14.5px;font-weight:600;
+    padding:12px 16px;border-radius:7px;border:none;background:var(--teal);color:#fff;
+    cursor:pointer;transition:background .15s;margin:2px 0 6px;
+  }
+  .auto-btn:hover{background:var(--teal-deep);}
+  .auto-btn:focus-visible{outline:3px solid var(--ink);outline-offset:2px;}
+  .auto-btn:disabled{opacity:.6;cursor:default;}
+  .qc-auto{margin:6px 0 18px;border:1px solid var(--line);border-radius:8px;background:#F7FAFA;padding:14px 16px;}
+  .qc-msg{font-size:14px;color:var(--ink-soft);}
+  .qc-msg.err{color:var(--flag);}
+  .qc-sub{font-size:12.5px;color:var(--ink-faint);display:block;margin-top:6px;}
+  .m-head{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--teal-deep);font-weight:600;margin:14px 0 2px;}
+  .m-head:first-child{margin-top:0;}
+  .m-row{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--line-soft);font-size:14px;}
+  .m-row:last-child{border-bottom:none;}
+  .m-row .ml{color:var(--ink-soft);}
+  .m-row .mv{font-family:'IBM Plex Mono',monospace;font-weight:500;text-align:right;}
+  .mv .fr{color:var(--flag);}
+  .mv .fg{color:var(--good);}
+  .m-note{font-size:12.5px;color:var(--ink-faint);margin-top:10px;line-height:1.5;}
+  .manual-label{font-size:12px;color:var(--ink-faint);font-family:'IBM Plex Mono',monospace;letter-spacing:.05em;margin:2px 0 8px;text-transform:uppercase;}
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none!important;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">Діагностична панель для наукової статті</div>
+    <h1>Як розібратися в дослідженні, перш ніж йому повірити</h1>
+    <p class="lede">Проганяй будь-яку статтю про БАДи, тренування чи відновлення через ці етапи. Мета — щоб <em>ти сам</em> розумів, що перед тобою, а не переказував це штучному інтелекту наосліп.</p>
+  </header>
+
+  <div class="principle">
+    <span class="tag">Головний принцип</span>
+    <p><strong>ШІ — це репетитор, а не оракул.</strong> Не кидай йому статтю з проханням «поясни». Спершу пройди чекліст сам. Він покаже конкретне місце, де ти застряг — незнайомий механізм чи термін. <strong>Ось тоді</strong> питаєш ШІ точково про це місце. Так ти нарощуєш власну базу, а не замінюєш її чужими відповідями, які не можеш перевірити.</p>
+  </div>
+
+  <!-- PYRAMID -->
+  <div class="section-eyebrow">Орієнтир · сила доказу</div>
+  <div class="pyramid">
+    <p class="pyr-title">Піраміда доказовості</p>
+    <p class="pyr-sub">Не всі «дослідження» рівні. Перше питання до будь-якого джерела: на якому воно щаблі? Натисни на рівень.</p>
+    <div class="pyr-scale"><span>▲ сильніший доказ</span><span>слабший доказ ▼</span></div>
+    <div id="pyramid-levels"></div>
+    <div class="pyr-detail empty" id="pyr-detail">Обери рівень, щоб побачити, що він означає для спортивної медицини.</div>
+  </div>
+
+  <!-- METRICS DECODER -->
+  <div class="section-eyebrow">Орієнтир · сила ефекту</div>
+  <div class="decoder">
+    <p class="pyr-title">Лінійка показників</p>
+    <p class="pyr-sub">Коли дослідження вже на людях, плутанина зазвичай починається тут — у самих числах. Це довідник, до якого варто повертатися. Натисни на показник.</p>
+    <div class="chips" id="decoder-chips"></div>
+    <div class="pyr-detail empty" id="dec-detail">Обери показник, щоб побачити, що він означає і де в ньому «нема ефекту».</div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="section-eyebrow">Чекліст · проходь по порядку</div>
+  <div class="progress-bar">
+    <div class="progress-track"><div class="progress-fill" id="pfill"></div></div>
+    <div class="progress-label" id="plabel">0 / 0 пройдено</div>
+  </div>
+
+  <div id="steps"></div>
+
+  <!-- RED FLAGS -->
+  <div class="flags">
+    <h3><span class="dot"></span>Червоні прапорці — швидкий скан</h3>
+    <p class="fsub">Якщо бачиш щось із цього — не обов'язково брехня, але читай удвічі критичніше. Особливо характерно для реклами добавок.</p>
+    <ul id="flags-list"></ul>
+  </div>
+
+  <!-- FOCUS CHECK -->
+  <div class="section-eyebrow">Перевірка · чи на тому ти фокусуєшся</div>
+  <div class="quiz">
+    <div class="quiz-head">
+      <h3>Тест на фокус</h3>
+      <p>Найважче — зрозуміти, чого саме ти не розумієш. Цей тест не про «вивчену правильну відповідь». Він показує, чи твоя увага чіпляється за те, що справді вирішує, чи за яскраву, але другорядну деталь. Для кожного випадку обери, на що б ти подивився першим.</p>
+    </div>
+    <div id="quiz-body"></div>
+    <div class="quiz-result" id="quiz-result" hidden></div>
+  </div>
+
+  <!-- NUMBER DRILL -->
+  <div class="section-eyebrow">Тренажер · читаємо цифру</div>
+  <div class="quiz">
+    <div class="quiz-head">
+      <h3>Читаємо цифру</h3>
+      <p>Короткі приклади саме на ті числа, де найлегше заплутатися. Прочитай показник і обери правильне тлумачення. Це перевірка навички, а не памʼяті.</p>
+    </div>
+    <div id="drill-body"></div>
+    <div class="quiz-result" id="drill-result" hidden></div>
+  </div>
+
+  <!-- QUALITY CHECKER -->
+  <div class="section-eyebrow">Інструмент · якість джерела</div>
+  <div class="gen">
+    <div class="gen-head">
+      <h3>Перевірка якості журналу й авторів</h3>
+      <p>Кнопки нижче відкривають справжні безкоштовні бази з уже підставленим запитом. Подивись, що там, і познач знайдене — внизу зʼявиться розбір сигналів. Це штурман, а не оцінка: він веде до джерел, а висновок робиш ти.</p>
+    </div>
+    <div class="gen-body">
+      <div class="field">
+        <label>Назва журналу</label>
+        <input id="qc-journal" placeholder="напр. Journal of Sports Sciences">
+      </div>
+      <div class="field">
+        <label>Прізвище автора <span class="hint">— перший або старший</span></label>
+        <input id="qc-author" placeholder="напр. Smith J">
+      </div>
+      <div class="field">
+        <label>DOI статті <span class="hint">— ключ до автообрахунку</span></label>
+        <input id="qc-doi" placeholder="напр. 10.1080/02640414.2023.1234567">
+      </div>
+      <button class="auto-btn" id="qc-auto-btn">⚡ Обчислити автоматично по DOI (OpenAlex)</button>
+      <div id="qc-auto" class="qc-auto" hidden></div>
+
+      <div class="manual-label">Або перевір вручну в базах:</div>
+      <div class="lookup-btns">
+        <button class="lookup-btn" data-src="scimago">Квартиль · SCImago ↗</button>
+        <button class="lookup-btn" data-src="pubmed">Індексація · NLM/PubMed ↗</button>
+        <button class="lookup-btn" data-src="doaj">Легітимний OA · DOAJ ↗</button>
+        <button class="lookup-btn" data-src="scholar">Автор · Google Scholar ↗</button>
+        <button class="lookup-btn" data-src="crossref">DOI · Crossref ↗</button>
+        <button class="lookup-btn" data-src="retraction">Відкликання · Retraction Watch ↗</button>
+      </div>
+
+      <div class="signal-cols">
+        <div class="signal-group green">
+          <h4>Сигнали довіри</h4>
+          <div class="sig-list" id="sig-good"></div>
+        </div>
+        <div class="signal-group red">
+          <h4>Тривожні сигнали</h4>
+          <div class="sig-list" id="sig-bad"></div>
+        </div>
+      </div>
+
+      <div class="readout" style="margin-top:16px;">
+        <div class="readout-top"><span class="rlabel">→ Розбір сигналів</span></div>
+        <div id="qc-verdict" style="padding:16px;font-family:'IBM Plex Sans',sans-serif;color:#DCE7E5;font-size:14px;line-height:1.6;">Познач сигнали вище — і тут зʼявиться розбір.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROMPT GENERATOR -->
+  <div class="section-eyebrow">Останній крок · правильне питання до ШІ</div>
+  <div class="gen">
+    <div class="gen-head">
+      <h3>Збери нормальний промт</h3>
+      <p>Тепер, коли ти знаєш, що перед тобою, заповни поля — і отримаєш питання, яке змусить ШІ пояснювати механізм і перевіряти дизайн, а не хвалити чи лаяти добавку.</p>
+    </div>
+    <div class="gen-body">
+      <div class="field">
+        <label>Тип джерела <span class="hint">— з Кроку 0–1</span></label>
+        <select id="f-type">
+          <option value="">оберіть…</option>
+          <option>оригінальне дослідження (РКД)</option>
+          <option>оригінальне дослідження (спостережне/когортне)</option>
+          <option>дослідження на тваринах</option>
+          <option>дослідження на клітинах (in vitro)</option>
+          <option>систематичний огляд / метааналіз</option>
+          <option>огляд літератури (narrative review)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Що перевіряли <span class="hint">— втручання (I з PICO)</span></label>
+        <input id="f-int" placeholder="напр. креатин моногідрат, 5 г/день, 8 тижнів">
+      </div>
+      <div class="field">
+        <label>На кому <span class="hint">— популяція (P з PICO)</span></label>
+        <input id="f-pop" placeholder="напр. нетреновані чоловіки 18–25 років">
+      </div>
+      <div class="field">
+        <label>Що знайшли <span class="hint">— коротко, своїми словами</span></label>
+        <textarea id="f-res" placeholder="напр. приріст сили в присіданні на 8% більше, ніж у групі плацебо"></textarea>
+      </div>
+      <div class="field">
+        <label>Що саме тобі незрозуміло <span class="hint">— термін, механізм, або чому з цього роблять такий висновок</span></label>
+        <textarea id="f-conf" placeholder="напр. не розумію, як креатин пов'язаний із виробленням енергії в м'язі"></textarea>
+      </div>
+
+      <div class="readout">
+        <div class="readout-top">
+          <span class="rlabel">→ Готовий промт</span>
+          <button class="copy-btn" id="copy-btn">Скопіювати</button>
+        </div>
+        <pre id="prompt-out"></pre>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    Пройди чекліст двічі-тричі на різних статтях — і етапи стануть автоматичними. Тоді ти вже не «читаєш, що сказав хтось в інтернеті», а сам оцінюєш, наскільки сильний доказ. Це і є та фундаментальна навичка, заради якої все затівалося.
+  </footer>
+
+</div>
+
+<script>
+/* ---------------- PYRAMID DATA ---------------- */
+const levels = [
+  {cls:'lv1', name:'Систематичні огляди й метааналізи', note:'найсильніше — якщо чесні',
+   detail:'Узагальнюють багато досліджень за суворими правилами. Найсильніший доказ — але лише коли зроблені якісно (див. Крок 5). Слабкі роботи, зібрані докупи, не стають сильним доказом.'},
+  {cls:'lv2', name:'Рандомізовані контрольовані (РКД / RCT)', note:'золотий стандарт',
+   detail:'Учасників випадково ділять на групи (втручання vs плацебо). Це єдиний дизайн, що надійно показує саме причину, а не збіг. Для питання «чи працює добавка» — головний орієнтир.'},
+  {cls:'lv3', name:'Когортні та спостережні', note:'зв\'язок ≠ причина',
+   detail:'Спостерігають за людьми без втручання. Можуть показати зв\'язок («ті, хто п\'є Х, здоровіші»), але не доводять, що причина саме в Х. Можливо, ці люди просто загалом більше дбають про себе.'},
+  {cls:'lv4', name:'Серії та описи випадків', note:'сигнал, не доказ',
+   detail:'Опис кількох пацієнтів без контрольної групи. Корисно як перший сигнал «варто дослідити», але робити з цього висновки «працює» — зарано.'},
+  {cls:'lv5', name:'Клітини (in vitro) і тварини', note:'механізм, не доказ для людини',
+   detail:'Показує, як речовина діє на клітину в чашці або на мишу. Це про механізм. Клітина в пробірці плаває в концентрації, недосяжній у живому тілі — там є всмоктування, печінка, розподіл, виведення. «Вбиває клітини раку в чашці» ≠ «лікує рак у людини».'},
+  {cls:'lv6', name:'Думка, анекдот, «мені допомогло»', note:'найслабше',
+   detail:'Особистий досвід, порада блогера, «мені зайшло». Може бути правдою, але як доказ — нуль: немає контролю, немає плацебо, працює ефект очікування.'}
+];
+
+const pyrEl = document.getElementById('pyramid-levels');
+const pyrDetail = document.getElementById('pyr-detail');
+levels.forEach(l=>{
+  const b=document.createElement('button');
+  b.className='level '+l.cls;
+  b.innerHTML=`<span class="lname">${l.name}</span><span class="lnote">${l.note}</span>`;
+  b.onclick=()=>{pyrDetail.textContent=l.detail;pyrDetail.classList.remove('empty');};
+  pyrEl.appendChild(b);
+});
+
+/* ---------------- METRICS DECODER ---------------- */
+const metrics = [
+  {k:'Розмір ефекту (d / SMD)',
+   d:'Показує, НАСКІЛЬКИ сильно вплинуло, у стандартних одиницях. «Нема ефекту» = 0. Орієнтир: ~0,2 малий, ~0,5 середній, ~0,8 і більше великий. Це головна відповідь на питання «це багато чи мало».'},
+  {k:'Довірчий інтервал (95% CI)',
+   d:'Діапазон, у якому ймовірно лежить справжній ефект. Дивись не на одну цифру, а на весь інтервал. Тривога, якщо він перетинає 0 (для різниці) або 1 (для співвідношення) — тоді ефекту може не бути взагалі.'},
+  {k:'p-значення',
+   d:'Каже лише одне: наскільки ймовірно, що результат — випадковість. Це НЕ розмір ефекту і НЕ його важливість. p<0,05 не означає «сильно» — лише «навряд чи випадково».'},
+  {k:'RR / OR / HR',
+   d:'Співвідношення: відносний ризик, відношення шансів, hazard ratio. «Нема ефекту» = 1. Більше 1 — частіше/більше, менше 1 — рідше/менше. Завжди відносні — обовʼязково питай абсолютні числа: «на скільки саме змінюється ризик?».'},
+  {k:'Клінічна значущість (MCID)',
+   d:'Чи ефект достатньо великий, щоб його ВІДЧУТИ, а не лише виміряти приладом. Статистично значуще ≠ помітно в реальному житті. Питай: це змінить результат спортсмена?'}
+];
+const chipsEl = document.getElementById('decoder-chips');
+const decDetail = document.getElementById('dec-detail');
+metrics.forEach(m=>{
+  const c=document.createElement('button');
+  c.className='chip';c.textContent=m.k;
+  c.onclick=()=>{
+    document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));
+    c.classList.add('active');
+    decDetail.textContent=m.d;decDetail.classList.remove('empty');
+  };
+  chipsEl.appendChild(c);
+});
+
+/* ---------------- STEPS DATA ---------------- */
+const steps = [
+  {
+    num:'КРОК 0', title:'Що це взагалі за джерело?',
+    items:[
+      {q:'Я знайшов первинне джерело, а не чийсь переказ.',
+       why:'Переказ майже завжди спотворює. Заголовок «Х лікує» часто виростає з фрази «Х вплинув на маркер у мишей». Блогер, рілс чи сайт добавки — це не джерело.',
+       how:'Шукай назву дослідження, авторів, рік, журнал. Гугли назву разом зі словом PubMed. Якщо первинного джерела нема взагалі — це не наука, це реклама.',
+       ex:'«Вчені довели, що колаген омолоджує» → знайди саме статтю. Часто виявиться, що вона була на клітинах шкіри в чашці, а не про питний колаген.'},
+      {q:'Я розумію, який це тип тексту.',
+       why:'Оригінальне дослідження дає нові дані. Огляд і метааналіз узагальнюють чуже. Прес-реліз чи новина на сайті університету — це вже переказ із «спіном».',
+       how:'Дивись на структуру: є Methods і Results зі своїми даними — це оригінал. «Ми переглянули N досліджень» — це огляд/метааналіз.',
+       ex:'Стаття на новинному сайті з посиланням «згідно з дослідженням» — це не дослідження. Перейди по посиланню.'}
+    ]
+  },
+  {
+    num:'КРОК 1', title:'На кому це робили: люди, тварини чи клітини?',
+    items:[
+      {q:'Я перевірив рівень: людина / тварина / клітина.',
+       why:'Це вирішує майже все. Величезна частина реклами БАДів побудована на дослідженнях у пробірці або на мишах, а продається як користь для людини. Те, що речовина щось робить з ізольованою клітиною, майже нічого не каже про таблетку, яку ти проковтнув: у тілі є всмоктування, метаболізм у печінці, розподіл, виведення. Це та база клітинної біології, яку ми вчимо — середовище in vitro та in vivo — різні всесвіти.',
+       how:'Слова in vitro, cell line, «культура клітин», назви ліній (HeLa, C2C12) = клітини. Mice, rats, murine = тварини. Це не мінус самому дослідженню — мінус з\'являється, коли такий результат подають як доказ для людини.',
+       ex:'«Куркумін вбиває ракові клітини» — майже завжди in vitro, у концентрації, яку через їжу чи добавку в крові не досягти й близько.'},
+      {q:'Якщо на людях — чи схожі вони на мене / мого спортсмена?',
+       why:'Ефект, знайдений на хворих літніх, не переноситься автоматично на молодих здорових — і навпаки.',
+       how:'Дивись вік, стать, рівень тренованості, стан здоров\'я учасників у розділі про вибірку.',
+       ex:'Ефект на нетренованих новачках часто набагато більший, ніж буде в тренованого атлета («ефект новачка»).'}
+    ]
+  },
+  {
+    num:'КРОК 2', title:'Що САМЕ перевіряли (PICO)',
+    items:[
+      {q:'P — Population: я зрозумів, на кому.',
+       why:'Без цього не можна сказати, чи стосується результат тебе.',
+       how:'Хто учасники, скільки, який стан. Запиши одним реченням.',
+       ex:'«24 нетренованих чоловіки 20–30 років» — вузька група, обережно з узагальненням.'},
+      {q:'I — Intervention: я зрозумів, що давали, скільки і як довго.',
+       why:'«Омега-3» — це не доза. 250 мг і 3 г — різні дослідження з різними висновками. Форма й тривалість теж вирішують.',
+       how:'Шукай конкретну речовину, дозу, форму, тривалість прийому.',
+       ex:'Магній цитрат і оксид всмоктуються по-різному — «магній працює» без форми й дози майже беззмістовне.'},
+      {q:'C — Comparison: я зрозумів, з чим порівнювали.',
+       why:'Без групи порівняння ти не знаєш, що спрацювала саме добавка, а не тренування, час чи очікування.',
+       how:'Шукай контрольну групу: плацебо, нічого, або інша добавка.',
+       ex:'«Приймали Х і стали сильнішими» — а може, вони просто тренувалися 8 тижнів? Без контролю не відповіси.'},
+      {q:'O — Outcome: я зрозумів, що виміряли — і чи це важить.',
+       why:'Часто міряють сурогат (показник у крові), а не реальний результат (сила, витривалість, менше травм). Сурогат може змінитися, а результат — ні.',
+       how:'Розділи: що реально важить для спорту проти проміжного маркера.',
+       ex:'Добавка підняла рівень маркера в крові — але час на дистанції не змінився. Красивий сурогат, нуль користі.'}
+    ]
+  },
+  {
+    num:'КРОК 3', title:'Наскільки якісно це зроблено',
+    items:[
+      {q:'Скільки учасників (n)? Достатньо?',
+       why:'Маленька вибірка (10–20) легко дає результат через випадковість. Що менше n — то слабший висновок.',
+       how:'Шукай n у Methods або в таблиці. Десятки — обережно, сотні — надійніше.',
+       ex:'«Спрацювало на 8 людях» — це майже нічого не доводить.'},
+      {q:'Була рандомізація і контрольна група?',
+       why:'Випадковий розподіл вирівнює групи, щоб різниця пояснювалась саме втручанням.',
+       how:'Слова randomized, controlled, placebo. Їх відсутність — слабке місце.',
+       ex:'Якщо люди самі обрали, приймати добавку чи ні — групи вже нерівні.'},
+      {q:'Було засліплення / плацебо?',
+       why:'Ефект очікування реальний. Якщо людина знає, що приймає «робочу» добавку, результат може покращитися сам по собі.',
+       how:'Double-blind, placebo-controlled — добре. Відкритий прийом — слабше.',
+       ex:'Багато «ефектів» БАДів зникають, щойно додають нормальне плацебо.'},
+      {q:'Хто це профінансував? Є конфлікт інтересів?',
+       why:'Дослідження добавки, оплачене її ж виробником — не обов\'язково брехня, але привід читати вдвічі критичніше.',
+       how:'Шукай у кінці статті розділи Funding, Conflict of interest, Disclosure.',
+       ex:'«Дослідження підтримано компанією-виробником добавки Х» — червоний прапорець, але не вирок.'}
+    ]
+  },
+  {
+    num:'КРОК 4', title:'Результати проти «спіну»',
+    items:[
+      {q:'Я подивився на самі цифри, а не тільки на висновок авторів.',
+       why:'Висновок — це вже інтерпретація. Автори (і особливо ті, хто переказує) люблять натягнути результат.',
+       how:'Читай Results і таблиці, а не лише останнє речення abstract.',
+       ex:'В abstract «покращує відновлення», а в таблиці — різниця на межі похибки.'},
+      {q:'Я розрізняю «статистично значуще» і «реально важливе».',
+       why:'p<0,05 означає «навряд чи випадковість», а НЕ «великий ефект». Можна мати значущий, але мікроскопічний результат.',
+       how:'Шукай розмір ефекту (effect size), а не тільки p-значення.',
+       ex:'Різниця «статистично значуща», але це +0,3 кг до жиму — на практиці нуль.'},
+      {q:'Відсотки відносні чи абсолютні?',
+       why:'«+50%» звучить гучно, але з 2% до 3% — це лише +1 процентний пункт.',
+       how:'Питай: 50% від чого? Шукай абсолютні числа.',
+       ex:'«Знижує ризик удвічі» — з 0,2% до 0,1%. Формально вдвічі, реально майже нічого.'},
+      {q:'Це кореляція чи причина?',
+       why:'Зв\'язок між двома речами не означає, що одне спричиняє інше.',
+       how:'Спостережне дослідження → максимум зв\'язок. Причину доводить лише РКД.',
+       ex:'«Хто п\'є протеїн, той м\'язистіший» — може, вони просто більше тренуються.'}
+    ]
+  },
+  {
+    num:'КРОК 4+', title:'Рівень впливу: наскільки сильно, а не просто «так чи ні»',
+    items:[
+      {q:'Я дивлюся на РОЗМІР ефекту, а не лише на «є різниця / нема різниці».',
+       why:'Дослідження на людях рідко дає чисте «так/ні». Питання не «чи вплинуло», а «наскільки сильно». Дві добавки можуть обидві «працювати статистично», але одна дає +1%, а інша +15%.',
+       how:'Шукай стандартизований розмір ефекту — Cohen\'s d або SMD. Груба лінійка: ~0,2 малий, ~0,5 середній, ~0,8 і більше великий. Якщо дають просту різницю (напр. +2 кг), питай себе: це багато відносно того, що взагалі буває?',
+       ex:'«Креатин збільшив силу, d=0,2» — ефект є, але маленький. «d=0,8» — це вже помітно.'},
+      {q:'Я дивлюся на довірчий інтервал (95% CI), а не лише на одну цифру.',
+       why:'Одна цифра («+5%») — це найкраща оцінка. Але справжній ефект лежить десь у діапазоні, і довірчий інтервал показує цей діапазон. Широкий інтервал = ми насправді мало що знаємо.',
+       how:'Ключове правило: якщо CI для різниці перетинає 0 (або для співвідношення перетинає 1) — ефекту може не бути взагалі, навіть якщо середнє «позитивне».',
+       ex:'«+5% (95% CI: −2% … +12%)» — інтервал перетинає нуль, тож реальний ефект може бути й нульовим. Гучний заголовок, хиткий доказ.'},
+      {q:'Якщо показник — це співвідношення (RR, OR, HR), я знаю, де тут «нема ефекту».',
+       why:'Відносний ризик (RR), відношення шансів (OR) і hazard ratio (HR) — часті показники. Головне правило: значення 1 = ефекту нема. Більше 1 — частіше/більше, менше 1 — рідше/менше.',
+       how:'RR=1,5 означає «на 50% частіше», але це ВІДНОСНО. Завжди питай абсолютні числа: 50% від чого?',
+       ex:'«Знижує ризик травми, HR=0,8» — на 20% менше відносно. Якщо базовий ризик був 5%, це падіння до 4%. Не так драматично, як звучить.'},
+      {q:'Я перевірив: ефект достатньо великий, щоб бути помітним у реальному житті?',
+       why:'Статистично значуще ≠ практично важливо. Є поняття мінімально важливої різниці — наскільки взагалі має змінитися показник, щоб спортсмен це відчув.',
+       how:'Питай: цей ефект змінить результат на змаганні, самопочуття чи ризик травми — чи це цифра, помітна лише приладу?',
+       ex:'Добавка «значуще» покращила час на 0,01 с — для статистики результат, для бігуна нічого.'}
+    ]
+  },
+  {
+    num:'КРОК 5', title:'Тільки для метааналізів та оглядів',
+    items:[
+      {q:'Які дослідження включили — і наскільки вони якісні?',
+       why:'Принцип «сміття на вході — сміття на виході». Двадцять слабких досліджень у сумі не дають сильного доказу.',
+       how:'Дивись критерії включення/виключення і чи оцінювали автори якість включених робіт.',
+       ex:'Метааналіз із 15 досліджень по 10 людей без плацебо — красива обгортка, слабка начинка.'},
+      {q:'Наскільки різними були включені дослідження (гетерогенність)?',
+       why:'Якщо змішали різні дози, популяції й методи, усереднення може бути безглуздим.',
+       how:'Шукай показник I². Високий I² (напр. >75%) = дослідження дуже різні, до середнього стався обережно.',
+       ex:'Змішали дітей і літніх, 200 мг і 2 г — «середній ефект» ні про що.'},
+      {q:'Чи врахували систематичну похибку публікацій (publication bias)?',
+       why:'Дослідження, де «нічого не вийшло», часто не публікують. Тому метааналізи бувають зсунуті в бік «працює».',
+       how:'Хороша робота це перевіряє — шукай згадку funnel plot або publication bias.',
+       ex:'Якщо про це ні слова — можливо, ефект перебільшений через невидимі негативні дослідження.'}
+    ]
+  }
+];
+
+const flags = [
+  'Тільки клітини або тварини — а продають як користь для людини.',
+  'Крихітна вибірка, без контрольної групи чи плацебо.',
+  'Оплачено виробником самої добавки.',
+  'Міряли лише сурогатний маркер, жодного реального результату.',
+  'Слова «детокс», «boost», «розганяє», «очищає», «природне = безпечне».',
+  'Одне дослідження проти всього наукового консенсусу, подане як сенсація.',
+  'Досліджували на одних (хворі літні), а продають іншим (молоді спортсмени).'
+];
+
+/* ---------------- RENDER STEPS ---------------- */
+const stepsEl = document.getElementById('steps');
+let totalItems = 0;
+steps.forEach((s, si)=>{
+  totalItems += s.items.length;
+  const step = document.createElement('div');
+  step.className='step';
+  step.dataset.step=si;
+
+  const head=document.createElement('div');
+  head.className='step-head';
+  head.innerHTML=`<span class="step-num">${s.num}</span>
+    <h2 class="step-title">${s.title}</h2>
+    <span class="step-count" data-count="${si}">0/${s.items.length}</span>`;
+  step.appendChild(head);
+
+  const items=document.createElement('div');
+  items.className='items';
+  s.items.forEach((it, ii)=>{
+    const item=document.createElement('div');
+    item.className='item';
+    const id=`c-${si}-${ii}`;
+    item.innerHTML=`
+      <div class="item-row">
+        <input type="checkbox" id="${id}">
+        <label class="q" for="${id}">${it.q}</label>
+        <button class="disclose" aria-expanded="false">чому?</button>
+      </div>
+      <div class="detail">
+        <div class="detail-inner">
+          <div class="blk"><span class="k why">Чому це важливо</span>${it.why}</div>
+          <div class="blk"><span class="k how">Як перевірити</span>${it.how}</div>
+          <div class="blk"><span class="k ex">Приклад</span><span class="ex-txt">${it.ex}</span></div>
+        </div>
+      </div>`;
+    items.appendChild(item);
+  });
+  step.appendChild(items);
+  stepsEl.appendChild(step);
+});
+
+/* red flags */
+const flagsList=document.getElementById('flags-list');
+flags.forEach(f=>{const li=document.createElement('li');li.textContent=f;flagsList.appendChild(li);});
+
+/* ---------------- INTERACTIONS ---------------- */
+// disclosure toggles
+document.querySelectorAll('.disclose').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const detail=btn.closest('.item').querySelector('.detail');
+    const open=detail.style.maxHeight && detail.style.maxHeight!=='0px';
+    if(open){detail.style.maxHeight='0px';btn.textContent='чому?';btn.setAttribute('aria-expanded','false');}
+    else{detail.style.maxHeight=detail.scrollHeight+'px';btn.textContent='згорнути';btn.setAttribute('aria-expanded','true');}
+  });
+});
+
+// checkbox progress
+const pfill=document.getElementById('pfill');
+const plabel=document.getElementById('plabel');
+function updateProgress(){
+  let done=0;
+  document.querySelectorAll('.step').forEach(step=>{
+    const boxes=step.querySelectorAll('input[type=checkbox]');
+    let sd=0;
+    boxes.forEach(b=>{if(b.checked)sd++;});
+    done+=sd;
+    const si=step.dataset.step;
+    step.querySelector(`[data-count="${si}"]`).textContent=`${sd}/${boxes.length}`;
+    step.classList.toggle('done', sd===boxes.length);
+  });
+  const pct=totalItems?Math.round(done/totalItems*100):0;
+  pfill.style.width=pct+'%';
+  plabel.textContent=`${done} / ${totalItems} пройдено`;
+}
+document.querySelectorAll('input[type=checkbox]').forEach(b=>{
+  b.addEventListener('change',()=>{
+    const label=b.closest('.item-row').querySelector('.q');
+    label.classList.toggle('checked', b.checked);
+    updateProgress();
+  });
+});
+updateProgress();
+
+/* ---------------- FOCUS CHECK QUIZ ---------------- */
+const quiz = [
+  {
+    scenario:'Заголовок: «Добавка ВДВІЧІ знижує ризик застуди!» У дослідженні ризик впав з 2% до 1%.',
+    prompt:'Що тут найважливіше помітити першим?',
+    opts:[
+      {t:'Що вибірка могла бути замалою', ok:false},
+      {t:'Що «вдвічі» — це відносне число: реальна різниця лише 1 процентний пункт', ok:true},
+      {t:'Що застуда — не така вже й серйозна хвороба', ok:false},
+      {t:'Що не вказано, яка саме це добавка', ok:false}
+    ],
+    fb:{lead:'Пастка «відносних відсотків».', text:'«Вдвічі» звучить драматично, але 2%→1% — це лише 1 пункт абсолютної різниці. Спершу переклади відносне в абсолютне, а вже потім оцінюй розмір вибірки чи інше.', ptr:'→ Крок 4 · відносне vs абсолютне'}
+  },
+  {
+    scenario:'Дослідження: добавка покращила витривалість на +6% (95% CI: −1% … +13%), p=0,06.',
+    prompt:'На що звернути увагу перш за все?',
+    opts:[
+      {t:'+6% — це чудовий результат', ok:false},
+      {t:'Довірчий інтервал перетинає нуль — ефект може бути й нульовим', ok:true},
+      {t:'6% замало, щоб узагалі це рахувати', ok:false},
+      {t:'Треба було давати більшу дозу', ok:false}
+    ],
+    fb:{lead:'Дивись на весь інтервал, а не на одну цифру.', text:'+6% — лише середня оцінка. CI від −1% до +13% включає нуль, тобто справжній ефект може бути відсутнім. p=0,06 підтверджує непевність. Не чіпляйся за «6%».', ptr:'→ Крок 4+ · довірчий інтервал'}
+  },
+  {
+    scenario:'Добавка «значуще підвищила рівень антиоксидантів у крові» в бігунів.',
+    prompt:'Яке питання тут головне?',
+    opts:[
+      {t:'Чи це підвищення реально покращило біг або відновлення — чи це лише маркер у крові', ok:true},
+      {t:'Який був рівень антиоксидантів до прийому', ok:false},
+      {t:'Скільки коштує ця добавка', ok:false},
+      {t:'Чи антиоксиданти натуральні', ok:false}
+    ],
+    fb:{lead:'Сурогат проти реального результату.', text:'Маркер у крові — це проміжний показник. Головне: чи змінилося те, що важить (результат, відновлення, менше травм). Дуже часто маркер росте, а реального ефекту нема.', ptr:'→ Крок 2 · Outcome (сурогат)'}
+  },
+  {
+    scenario:'Добавка статистично значуще покращила час на 100 м. Різниця — 0,02 секунди. n=400, p<0,001.',
+    prompt:'Що тут ключове?',
+    opts:[
+      {t:'p<0,001 — отже, ефект сильний', ok:false},
+      {t:'Велика вибірка робить значущою навіть мікроскопічну різницю; 0,02 с — практично нічого', ok:true},
+      {t:'Потрібна ще більша вибірка', ok:false},
+      {t:'100 м — не показова дистанція', ok:false}
+    ],
+    fb:{lead:'p ≠ розмір ефекту.', text:'Маленьке p при великій вибірці означає лише «це не випадковість» — а не «це багато». 0,02 с — за межею практичної помітності. Розділяй статистичну і практичну значущість.', ptr:'→ Крок 4+ · клінічна vs статистична'}
+  },
+  {
+    scenario:'Опитування: спортсмени, які приймають протеїн, мають у середньому більше м\'язів.',
+    prompt:'Головна пастка тут?',
+    opts:[
+      {t:'Отже, протеїн точно нарощує м\'язи', ok:false},
+      {t:'Це спостереження — можливо, ці люди просто більше й серйозніше тренуються (звʼязок, не причина)', ok:true},
+      {t:'Треба знати конкретну марку протеїну', ok:false},
+      {t:'Мʼязову масу складно виміряти', ok:false}
+    ],
+    fb:{lead:'Кореляція ≠ причина.', text:'Спостережне дослідження показує звʼязок, а не те, що причина саме в протеїні. Ті, хто його пʼє, часто загалом дисциплінованіші в тренуваннях і харчуванні. Причину довів би лише РКД.', ptr:'→ Крок 4 · кореляція vs причина'}
+  }
+];
+
+const quizBody=document.getElementById('quiz-body');
+const quizResult=document.getElementById('quiz-result');
+let qAnswered=0, qScore=0;
+const marks=['А','Б','В','Г'];
+quiz.forEach((c, ci)=>{
+  const box=document.createElement('div');
+  box.className='qcase';
+  box.innerHTML=`<span class="qnum">Випадок ${ci+1}</span>
+    <div class="qscenario">${c.scenario}</div>
+    <div class="qprompt">${c.prompt}</div>
+    <div class="qopts"></div>`;
+  const optsWrap=box.querySelector('.qopts');
+  c.opts.forEach((o, oi)=>{
+    const btn=document.createElement('button');
+    btn.className='qopt';
+    btn.innerHTML=`<span class="mark">${marks[oi]}</span>${o.t}`;
+    btn.onclick=()=>{
+      const all=optsWrap.querySelectorAll('.qopt');
+      all.forEach(b=>{b.disabled=true;});
+      c.opts.forEach((oo, k)=>{ if(oo.ok) all[k].classList.add('correct'); });
+      if(!o.ok) btn.classList.add('wrong');
+      const fb=document.createElement('div');
+      fb.className='qfb';
+      fb.innerHTML=`<span class="lead">${o.ok?'Так — ти дивишся на те, що вирішує.':'Тут увага чіпляється за другорядне.'} ${c.fb.lead}</span>${c.fb.text}<span class="ptr">${c.fb.ptr}</span>`;
+      box.appendChild(fb);
+      qAnswered++; if(o.ok) qScore++;
+      if(qAnswered===quiz.length) showQuizResult();
+    };
+    optsWrap.appendChild(btn);
+  });
+  quizBody.appendChild(box);
+});
+
+function showQuizResult(){
+  let msg;
+  if(qScore===quiz.length){
+    msg='Ти стабільно наводиш увагу на те, що справді вирішує, і не ведешся на гучні відсотки чи маленьке p. Саме цього ми й домагаємось.';
+  } else if(qScore>=Math.ceil(quiz.length*0.6)){
+    msg='Здебільшого фокус правильний. Там, де промахнувся, тебе відвернула яскрава деталь. Повернись до кроків, на які вели стрілки — саме там твоя сліпа зона.';
+  } else {
+    msg='Увага часто чіпляється за другорядне: гучний відсоток, маленьке p, слово «натуральний». Це нормально — саме для цього й потрібен чекліст. Перечитай кроки зі стрілок і пройди тест ще раз.';
+  }
+  quizResult.innerHTML=`<h4>Твій фокус: <span class="score">${qScore} / ${quiz.length}</span></h4><p>${msg}</p>`;
+  quizResult.hidden=false;
+}
+
+/* ---------------- NUMBER DRILL ---------------- */
+function renderQuizLike(data, bodyEl, resultEl, resultFn){
+  let answered=0, score=0;
+  const mk=['А','Б','В','Г'];
+  data.forEach((c, ci)=>{
+    const box=document.createElement('div');
+    box.className='qcase';
+    box.innerHTML=`<span class="qnum">${c.label||('Приклад '+(ci+1))}</span>
+      <div class="qscenario">${c.scenario}</div>
+      <div class="qprompt">${c.prompt}</div><div class="qopts"></div>`;
+    const wrap=box.querySelector('.qopts');
+    c.opts.forEach((o, oi)=>{
+      const btn=document.createElement('button');
+      btn.className='qopt';
+      btn.innerHTML=`<span class="mark">${mk[oi]}</span>${o.t}`;
+      btn.onclick=()=>{
+        const all=wrap.querySelectorAll('.qopt');
+        all.forEach(b=>b.disabled=true);
+        c.opts.forEach((oo,k)=>{ if(oo.ok) all[k].classList.add('correct'); });
+        if(!o.ok) btn.classList.add('wrong');
+        const fb=document.createElement('div');
+        fb.className='qfb';
+        fb.innerHTML=`<span class="lead">${o.ok?'Правильно.':'Не тут.'} ${c.fb.lead}</span>${c.fb.text}${c.fb.ptr?`<span class="ptr">${c.fb.ptr}</span>`:''}`;
+        box.appendChild(fb);
+        answered++; if(o.ok) score++;
+        if(answered===data.length){ resultEl.innerHTML=resultFn(score,data.length); resultEl.hidden=false; }
+      };
+      wrap.appendChild(btn);
+    });
+    bodyEl.appendChild(box);
+  });
+}
+
+const drill = [
+  {scenario:'Розмір ефекту: d = 0,25.',
+   prompt:'Як описати цей ефект?',
+   opts:[{t:'Великий',ok:false},{t:'Середній',ok:false},{t:'Малий',ok:true},{t:'Ефекту нема',ok:false}],
+   fb:{lead:'d ≈ 0,2 — малий.',text:'Лінійка: ~0,2 малий, ~0,5 середній, ~0,8 великий. d=0 означало б відсутність ефекту, але 0,25 — це маленький, хоч і реальний.'}},
+  {scenario:'Приріст сили: +3 кг (95% CI: −1 … +7 кг).',
+   prompt:'Що це насправді означає?',
+   opts:[{t:'Добавка точно додає близько 3 кг',ok:false},{t:'Ефект непевний: інтервал перетинає нуль, реально може бути й нуль',ok:true},{t:'Добавка точно не працює',ok:false},{t:'Треба збільшити дозу',ok:false}],
+   fb:{lead:'Дивись на весь інтервал.',text:'+3 кг — лише середня оцінка. Оскільки CI від −1 до +7 включає нуль, серед можливих значень є і «жодного ефекту». Впевнено казати «додає 3 кг» не можна.',ptr:'→ Лінійка · довірчий інтервал'}},
+  {scenario:'Ризик травми: RR = 1,0.',
+   prompt:'Що показує цей показник?',
+   opts:[{t:'Ризик знижується',ok:false},{t:'Ризик зростає',ok:false},{t:'Різниці в ризику нема',ok:true},{t:'Даних недостатньо',ok:false}],
+   fb:{lead:'Для співвідношень 1 = нема ефекту.',text:'RR, OR і HR рахуються від одиниці. 1,0 означає, що ризик у групах однаковий. Більше 1 — вищий, менше 1 — нижчий.',ptr:'→ Лінійка · RR / OR / HR'}},
+  {scenario:'p = 0,001; різниця в часі на 100 м — 0,05 секунди; n = 500.',
+   prompt:'Що тут головне?',
+   opts:[{t:'p крихітне — отже, ефект дуже сильний',ok:false},{t:'Результат навряд чи випадковий, але сам ефект мізерний',ok:true},{t:'У дослідженні помилка',ok:false},{t:'p взагалі нічого не означає',ok:false}],
+   fb:{lead:'p ≠ розмір ефекту.',text:'Маленьке p при великій вибірці каже лише «це не випадковість». Розмір ефекту (0,05 с) — окреме питання, і тут він практично непомітний.',ptr:'→ Крок 4+ · клінічна vs статистична'}},
+  {scenario:'Ризик застуди впав з 8% до 6%. Заголовок: «мінус 25%!».',
+   prompt:'Як правильно це прочитати?',
+   opts:[{t:'Ризик впав на 25 процентних пунктів',ok:false},{t:'Це відносне зниження; в абсолютних числах — на 2 пункти',ok:true},{t:'Заголовок повністю бреше',ok:false},{t:'6% — це дуже багато',ok:false}],
+   fb:{lead:'Відносне ≠ абсолютне.',text:'2 з 8 — це і є 25% (відносно). Але абсолютно ризик впав лише на 2 пункти, з 8% до 6%. Заголовок не бреше — він просто обрав ефектнішу форму.',ptr:'→ Крок 4 · відносне vs абсолютне'}},
+  {scenario:'Hazard ratio: HR = 0,7.',
+   prompt:'Як це приблизно тлумачити?',
+   opts:[{t:'Приблизно на 30% нижчий ризик (відносно)',ok:true},{t:'На 70% нижчий ризик',ok:false},{t:'На 30% вищий ризик',ok:false},{t:'Ефекту нема',ok:false}],
+   fb:{lead:'Рахуй від одиниці.',text:'HR=0,7 → 1 − 0,7 = 0,3, тобто приблизно на 30% нижчий ризик відносно. І, як завжди зі співвідношеннями, питай абсолютні числа: 30% від якого базового ризику?',ptr:'→ Лінійка · RR / OR / HR'}}
+];
+
+renderQuizLike(drill, document.getElementById('drill-body'), document.getElementById('drill-result'), (s,n)=>{
+  let m;
+  if(s===n) m='Ти читаєш числа впевнено — саме та навичка, якої бракувало.';
+  else if(s>=Math.ceil(n*0.6)) m='Основне читаєш правильно. Промахи — там, де число «звучить» переконливіше, ніж є насправді. Повернись до Лінійки показників.';
+  else m='Числа поки збивають з пантелику — це нормально, воно й тренується. Перечитай Крок 4+ і Лінійку показників, потім пройди тренажер ще раз.';
+  return `<h4>Результат: <span class="score">${s} / ${n}</span></h4><p>${m}</p>`;
+});
+
+/* ---------------- QUALITY CHECKER ---------------- */
+const sigGood = [
+  'Індексується в PubMed / Scopus / Web of Science',
+  'Квартиль Q1–Q2 на SCImago',
+  'Якщо open access — журнал є в DOAJ',
+  'Автори мають інші публікації в цій темі',
+  'Реальна афіліація (університет / лабораторія)',
+  'Чітко зазначено рецензування (peer-reviewed)'
+];
+const sigBad = [
+  'Журнал ніде не вдалося знайти / не індексується',
+  'Обіцянки «публікація за кілька днів», спам-запрошення',
+  '«Impact Factor» від сумнівних контор (напр. Global Impact Factor)',
+  'Автори без інших робіт у темі або з фейковою афіліацією',
+  'Стаття позначена як відкликана (Retracted)',
+  'Оплата за публікацію без ознак нормального рецензування'
+];
+
+function renderSignals(list, containerId, kind){
+  const c=document.getElementById(containerId);
+  list.forEach((s,i)=>{
+    const id=`${kind}-${i}`;
+    const lab=document.createElement('label');
+    lab.className='sig-item';
+    lab.innerHTML=`<input type="checkbox" id="${id}"><span>${s}</span>`;
+    lab.querySelector('input').addEventListener('change',updateVerdict);
+    c.appendChild(lab);
+  });
+}
+renderSignals(sigGood,'sig-good','g');
+renderSignals(sigBad,'sig-bad','b');
+
+const verdictEl=document.getElementById('qc-verdict');
+const CAVEAT='<span class="caveat">Памʼятай: слабкий журнал не робить результат автоматично неправдою, а сильний — автоматично правдою. Це шар перевірки джерела, а не заміна читання самої статті.</span>';
+function updateVerdict(){
+  const g=document.querySelectorAll('#sig-good input:checked').length;
+  const b=document.querySelectorAll('#sig-bad input:checked').length;
+  if(g===0 && b===0){verdictEl.innerHTML='Познач сигнали вище — і тут зʼявиться розбір.';return;}
+  let read;
+  if(b===0 && g>=3){
+    read='Схоже на надійне джерело. Але навіть сильний журнал не гарантує правильності саме цієї статті — все одно проведи її через чекліст вище.';
+  } else if(b>=3 || (b>=1 && g===0)){
+    read='Багато тривожних ознак. Дуже ймовірно, що це слабке або хижацьке джерело. Не спирайся на нього як на доказ — шукай, чи підтверджують той самий результат індексовані журнали.';
+  } else if(b>=1){
+    read='Змішана картина. Тривожні сигнали є, але це не вирок — читай удвічі критичніше і перевір, чи є незалежне підтвердження в надійніших джерелах.';
+  } else {
+    read='Сигнали радше позитивні, але їх поки небагато. Догляди решту (індексація, квартиль, автори), щоб картина була повнішою.';
+  }
+  verdictEl.innerHTML=`<span class="tag">довіра: ${g} · тривога: ${b}</span> — ${read}${CAVEAT}`;
+}
+
+document.querySelectorAll('.lookup-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const jRaw=document.getElementById('qc-journal').value.trim();
+    const aRaw=document.getElementById('qc-author').value.trim();
+    const dRaw=document.getElementById('qc-doi').value.trim();
+    const j=encodeURIComponent(jRaw), a=encodeURIComponent(aRaw), d=encodeURIComponent(dRaw);
+    const src=btn.dataset.src;
+    let url;
+    if(src==='scimago')      url = jRaw ? 'https://www.scimagojr.com/journalsearch.php?q='+j+'&tip=jou' : 'https://www.scimagojr.com/';
+    else if(src==='pubmed')  url = jRaw ? 'https://www.ncbi.nlm.nih.gov/nlmcatalog/?term='+j : 'https://www.ncbi.nlm.nih.gov/nlmcatalog/';
+    else if(src==='doaj')    url = 'https://doaj.org/';
+    else if(src==='scholar') url = aRaw ? 'https://scholar.google.com/scholar?q='+a : 'https://scholar.google.com/';
+    else if(src==='crossref')url = dRaw ? 'https://search.crossref.org/?q='+d : (jRaw ? 'https://search.crossref.org/?q='+j : 'https://search.crossref.org/');
+    else if(src==='retraction') url = 'http://retractiondatabase.org/RetractionSearch.aspx';
+    window.open(url,'_blank','noopener');
+  });
+});
+
+/* ---------------- AUTO LOOKUP (OpenAlex) ---------------- */
+const OA='https://api.openalex.org';
+const MAILTO='mailto=research-literacy-tool'; // ввічливий пул OpenAlex — можеш замінити на свій email
+
+async function oaGet(path){
+  const url=`${OA}${path}${path.includes('?')?'&':'?'}${MAILTO}`;
+  const r=await fetch(url,{headers:{'Accept':'application/json'}});
+  if(!r.ok) throw new Error('http '+r.status);
+  return r.json();
+}
+function shortId(id){ return id? String(id).split('/').pop() : null; }
+function fmt(v,dec){ if(v===null||v===undefined) return '—'; return dec!=null? Number(v).toFixed(dec): v; }
+function setCB(id,val){ const el=document.getElementById(id); if(el) el.checked=!!val; }
+
+async function autoCheck(){
+  const btn=document.getElementById('qc-auto-btn');
+  const panel=document.getElementById('qc-auto');
+  const raw=document.getElementById('qc-doi').value.trim();
+  const doi=raw.replace(/^https?:\/\/(dx\.)?doi\.org\//i,'').replace(/^doi:/i,'').trim();
+  const authorQ=document.getElementById('qc-author').value.trim();
+  panel.hidden=false;
+  if(!doi){ panel.innerHTML='<div class="qc-msg">Для автоматичного розрахунку потрібен DOI статті.</div>'; return; }
+  btn.disabled=true; panel.innerHTML='<div class="qc-msg">Рахую… звертаюся до бази OpenAlex.</div>';
+  try{
+    const work=await oaGet(`/works/doi:${doi}`);
+    const srcStub=work.primary_location && work.primary_location.source;
+    let src=null;
+    if(srcStub && srcStub.id){ try{ src=await oaGet(`/sources/${shortId(srcStub.id)}`);}catch(e){} }
+    const auths=work.authorships||[];
+    let match=null;
+    if(authorQ){
+      const first=authorQ.toLowerCase().split(/\s+/)[0];
+      match=auths.find(a=>a.author&&a.author.display_name&&a.author.display_name.toLowerCase().includes(first));
+    }
+    if(!match) match=auths.find(a=>a.is_corresponding)||auths[0];
+    let author=null, authorName=null;
+    if(match&&match.author&&match.author.id){
+      authorName=match.author.display_name;
+      try{ author=await oaGet(`/authors/${shortId(match.author.id)}`);}catch(e){}
+    }
+    renderAuto(work, src||srcStub, author, authorName);
+  }catch(err){
+    const notFound=err.message&&err.message.includes('404');
+    panel.innerHTML=`<div class="qc-msg err">Не вдалося отримати дані.${notFound?' DOI не знайдено в OpenAlex — перевір, чи він правильний.':''}<span class="qc-sub">Якщо DOI точно вірний: у прев’ю в чаті зовнішні запити часто заблоковані. На твоєму хостингу (GitHub Pages тощо) автообрахунок працюватиме.</span></div>`;
+  }finally{ btn.disabled=false; }
+}
+
+function renderAuto(work, src, author, authorName){
+  const panel=document.getElementById('qc-auto');
+  const s = src && src.summary_stats ? src.summary_stats : {};
+  const jname=(src&&src.display_name)||'невідомо';
+  const publisher=(src&&src.host_organization_name)||'';
+  const hj = (s.h_index!=null)? s.h_index : null;
+  const cit = (s['2yr_mean_citedness']!=null)? s['2yr_mean_citedness'] : null;
+  const doaj = src? src.is_in_doaj : null;
+  const isOA = src? src.is_oa : null;
+  const jworks = src? src.works_count : null;
+  const retracted = work.is_retracted===true;
+  const artcit = work.cited_by_count;
+  const fwci = (work.fwci!=null)? work.fwci : null;
+  const ha = author&&author.summary_stats? author.summary_stats.h_index : null;
+  const aworks = author? author.works_count : null;
+
+  const yn=(v)=> v===true? '<span class="fg">так</span>' : v===false? '<span class="fr">ні</span>' : '—';
+  const retTag = retracted? '<span class="fr">ТАК — перевір на Retraction Watch</span>' : '<span class="fg">ні</span>';
+  const fwciNote = fwci!=null? (fwci>=1? ' (вище середнього в галузі)':' (нижче середнього в галузі)') : '';
+
+  panel.innerHTML=`
+    <div class="m-head">Журнал${publisher?` · ${publisher}`:''}</div>
+    <div class="m-row"><span class="ml">Назва</span><span class="mv">${jname}</span></div>
+    <div class="m-row"><span class="ml">H-index журналу</span><span class="mv">${fmt(hj)}</span></div>
+    <div class="m-row"><span class="ml">2-річна цитованість (≈ IF)</span><span class="mv">${fmt(cit,2)}</span></div>
+    <div class="m-row"><span class="ml">У DOAJ / open access</span><span class="mv">${yn(doaj)} / ${yn(isOA)}</span></div>
+    <div class="m-row"><span class="ml">Усього робіт у журналі</span><span class="mv">${fmt(jworks)}</span></div>
+    <div class="m-head">Стаття</div>
+    <div class="m-row"><span class="ml">Цитувань</span><span class="mv">${fmt(artcit)}</span></div>
+    <div class="m-row"><span class="ml">FWCI</span><span class="mv">${fmt(fwci,2)}${fwciNote}</span></div>
+    <div class="m-row"><span class="ml">Відкликана?</span><span class="mv">${retTag}</span></div>
+    ${author?`<div class="m-head">Автор · ${authorName||''}</div>
+    <div class="m-row"><span class="ml">H-index автора</span><span class="mv">${fmt(ha)}</span></div>
+    <div class="m-row"><span class="ml">Усього робіт</span><span class="mv">${fmt(aworks)}</span></div>`:''}
+    <div class="m-note">Автомат заповнив галочки, які зміг визначити. Числа залежать від галузі: у математиці «сильний» h-index нижчий, ніж у біомедицині, а нова легітимна публікація й автор-початківець матимуть низькі значення — це не мінус сам по собі. Рецензування, хижацькі ознаки й реальність афіліації бази не знають — це лишається за тобою.</div>`;
+
+  // авто-позначки (обережні, лише те, що визначається надійно)
+  setCB('b-4', retracted);                                   // Retracted
+  if(doaj!=null) setCB('g-2', doaj===true);                  // у DOAJ
+  const reputable=(hj!=null&&hj>=20)||(cit!=null&&cit>=1.5);
+  if(hj!=null||cit!=null) setCB('g-0', reputable);           // індексований / солідний
+  const lowJournal=(hj!=null&&hj<=3&&(jworks==null||jworks<100));
+  if(hj!=null) setCB('b-0', lowJournal);                     // ніде не знайти / низький
+  const hasAff=(work.authorships||[]).some(a=>a.institutions&&a.institutions.length);
+  setCB('g-4', hasAff);                                      // реальна афіліація
+  if(author&&aworks!=null&&aworks>=5) setCB('g-3', true);    // автор має доробок
+  updateVerdict();
+}
+document.getElementById('qc-auto-btn').addEventListener('click', autoCheck);
+
+/* ---------------- PROMPT GENERATOR ---------------- */
+const out=document.getElementById('prompt-out');
+const F={type:'f-type',int:'f-int',pop:'f-pop',res:'f-res',conf:'f-conf'};
+function val(id){return document.getElementById(id).value.trim();}
+function ph(v, fallback){return v ? escapeHtml(v) : `<span class="ph">${fallback}</span>`;}
+function escapeHtml(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
+
+function buildPrompt(){
+  const type=val('f-type'), int=val('f-int'), pop=val('f-pop'), res=val('f-res'), conf=val('f-conf');
+  const html =
+`Я читаю ${ph(type,'[тип дослідження]')} про ${ph(int,'[що перевіряли]')} у групі: ${ph(pop,'[на кому]')}.
+
+Дослідження знайшло: ${ph(res,'[що знайшли]')}.
+
+Я поки не маю сильної бази в цьому: ${ph(conf,'[що незрозуміло]')}.
+
+Допоможи мені як репетитор, а не як заміна мого мислення:
+1. Поясни просто саме той механізм/термін, у якому я плаваю (див. вище).
+2. Оціни дизайн: чи такий тип дослідження взагалі дозволяє робити такий висновок? Де слабкі місця?
+3. Дай 3 конкретні питання, які я маю поставити до цього дослідження, щоб не купитися на перебільшення.
+
+Не хвали й не лай добавку — поясни, наскільки сильний саме цей доказ.`;
+  out.innerHTML=html;
+}
+Object.values(F).forEach(id=>document.getElementById(id).addEventListener('input',buildPrompt));
+buildPrompt();
+
+// copy
+const copyBtn=document.getElementById('copy-btn');
+copyBtn.addEventListener('click',()=>{
+  const text=out.innerText;
+  const done=()=>{copyBtn.textContent='Скопійовано ✓';copyBtn.classList.add('ok');
+    setTimeout(()=>{copyBtn.textContent='Скопіювати';copyBtn.classList.remove('ok');},1800);};
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(done).catch(fallbackCopy);
+  } else fallbackCopy();
+  function fallbackCopy(){
+    const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);
+    ta.select();try{document.execCommand('copy');done();}catch(e){}document.body.removeChild(ta);
+  }
+});
+</script>
+</body>
+</html>
